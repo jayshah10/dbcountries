@@ -1,6 +1,6 @@
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef, NewValueParams, RowSelectedEvent, ValueFormatterParams } from 'ag-grid-community';
-import { Country } from '../../types';
+import { Country, Currency } from '../../types';
 import { useMemo } from 'react';
 
 interface CountryWithFavourites extends Country {
@@ -22,7 +22,26 @@ const getColDefs = (onToggleFavourite: (cca3: string) => void): Array<ColDef<Cou
     {
       field: 'languages',
       valueFormatter: (params: ValueFormatterParams<CountryWithFavourites>) => {
-        return Object.values(params.value).join(',');
+        if (params.value) {
+          return Object.values(params.value).join(',');
+        } else {
+          console.log(params);
+          return '';
+        }
+      },
+    },
+    {
+      field: 'currencies',
+      headerName: 'Currencies',
+      valueFormatter: (params: ValueFormatterParams<CountryWithFavourites>) => {
+        if (params.value) {
+          return Object.values(params.value)
+            .map((v) => (v as Currency).name)
+            .join(',');
+        } else {
+          console.log(params);
+          return '';
+        }
       },
     },
     {
@@ -67,11 +86,10 @@ export const CountryGrid = (props: CountryGridProps) => {
     }
   };
 
-  console.log(countryWithFavourites);
-
   return (
     <div className="ag-theme-quartz-dark" style={{ height: '800px', width: '800px' }}>
       <AgGridReact<CountryWithFavourites>
+        rowSelection={'single'}
         onRowSelected={onRowSelected}
         rowData={countryWithFavourites}
         columnDefs={colDefs}

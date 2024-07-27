@@ -18,7 +18,7 @@ const fuseOptions = {
   // ignoreLocation: false,
   // ignoreFieldNorm: false,
   // fieldNormWeight: 1,
-  keys: ['name.common'],
+  keys: ['name.common', 'languages', 'currencies'],
 };
 
 export const useCountries = (search?: string) => {
