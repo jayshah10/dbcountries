@@ -1,10 +1,14 @@
 import { ChangeEventHandler, useCallback, useState } from 'react';
-import { useCountries } from '../../hooks';
+import { useCountries, useFavourites } from '../../hooks';
 import { CircularProgress, Container, Stack, TextField, Card, CardContent } from '@mui/material';
 import useDebounce from '../../hooks/useDebounce/useDebounce';
+import { CountryGrid } from '../country-grid';
+import { Country } from '../../types';
 
 export const Countries = () => {
   const [searchString, setSearchString] = useState<string | undefined>();
+  const [_, setSelectedCountry] = useState<Country | undefined>();
+  const { favourites, toggleFavourite } = useFavourites();
   const debouncedSearchString = useDebounce(searchString, 500);
   const updateSearchString: ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
@@ -13,16 +17,23 @@ export const Countries = () => {
     [setSearchString],
   );
 
-  const { data, isPending, error } = useCountries(debouncedSearchString);
+  const { data, isPending } = useCountries(debouncedSearchString);
 
   return (
-    <Card>
+    <Card style={{ width: 'inherit' }}>
       <CardContent>
         <Container>
           <Stack spacing={2}>
             <TextField value={searchString} onChange={updateSearchString} label="Search" variant="filled" />
             {isPending && <CircularProgress />}
-            {data && JSON.stringify(data)}
+            {data && (
+              <CountryGrid
+                data={data}
+                onSelect={setSelectedCountry}
+                favourites={favourites}
+                onToggleFavourite={toggleFavourite}
+              />
+            )}
           </Stack>
         </Container>
       </CardContent>

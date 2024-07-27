@@ -1,7 +1,8 @@
 :root {
   margin: auto;
   padding: 24px;
-  width: max-content;
+  width: 1024px;
+  height: 1024px;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
